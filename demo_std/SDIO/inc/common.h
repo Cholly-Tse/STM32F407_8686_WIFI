@@ -169,7 +169,7 @@ enum { MSG_MSGDUMP, MSG_DEBUG, MSG_INFO, MSG_WARNING, MSG_ERROR };
 
 
 #define pr_fifo_debug(arg...)// void_dbg//Uart_Printf
-#define pr_debug     //Uart_Printf// void_dbg//(arg...)
+#define pr_debug     Uart_Printf// void_dbg//(arg...)//20150909
 #define pr_warning(arg...)// void_dbg//Uart_Printf
 #define dbg(arg...)//void_dbg//Uart_Printf
 #define  marvell_error Uart_Printf

@@ -456,6 +456,49 @@ static void DMA_RxConfiguration(u32 *BufferDST, u32 BufferSize)
 // 	DMA_SetCurrDataCounter(DMA2_Stream3,BufferSize / 4);          //数据传输量  
 //  
 // 	DMA_Cmd(DMA2_Stream3, ENABLE);                      //开启DMA传输 
+  DMA_InitTypeDef DMA_InitStructure;
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2,ENABLE);
+	
+	DMA_Cmd(DMA2_Stream3, DISABLE);//2015xxx0819
+	
+	DMA_DeInit(DMA2_Stream3);
+	while (DMA_GetCmdStatus(DMA2_Stream3) != DISABLE){}
+
+  DMA_ClearFlag(DMA2_Stream3,DMA_FLAG_TCIF3 | DMA_FLAG_HTIF3 | DMA_FLAG_TEIF3 | DMA_FLAG_DMEIF3 | DMA_FLAG_FEIF3);
+
+  /* DMA2 Channel4 Config */
+	DMA_InitStructure.DMA_Channel=DMA_Channel_4;
+  DMA_InitStructure.DMA_PeripheralBaseAddr = (u32)SDIO_FIFO_Address;
+  DMA_InitStructure.DMA_Memory0BaseAddr = (u32)BufferDST;
+  DMA_InitStructure.DMA_DIR =DMA_DIR_PeripheralToMemory;//DMA_DIR_PeripheralToMemory;// 
+  DMA_InitStructure.DMA_BufferSize = BufferSize / 4;
+  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;//2015xxx0809
+  DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Word;
+  DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+  DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;
+	
+	DMA_InitStructure.DMA_FIFOMode=DMA_FIFOMode_Enable;//2015xxx0909
+	DMA_InitStructure.DMA_FIFOThreshold=DMA_FIFOThreshold_Full;
+	
+	DMA_InitStructure.DMA_MemoryBurst=DMA_MemoryBurst_INC4;
+	DMA_InitStructure.DMA_PeripheralBurst=DMA_PeripheralBurst_INC4;
+	
+	DMA_FlowControllerConfig(DMA2_Stream3,DMA_FlowCtrl_Peripheral);	
+
+	DMA_Init(DMA2_Stream3, &DMA_InitStructure);
+
+  
+// 	SDIO_DMACmd(ENABLE);
+	
+// 	/* DMA2 Channel4 enable */
+//   DMA_Cmd(DMA2_Stream6, DISABLE);
+// 	while (DMA_GetCmdStatus(DMA2_Stream6) != DISABLE){}	//确保DMA可以被设置  
+// 		
+// 	DMA_SetCurrDataCounter(DMA2_Stream6,BufferSize / 4);          //数据传输量  
+
+	DMA_Cmd(DMA2_Stream3, ENABLE);                      //开启DMA传输 
 
 }
 
@@ -466,12 +509,12 @@ static void DMA_TxConfiguration(u32 *BufferSRC, u32 BufferSize)//DMA2_Stream3???
   DMA_InitTypeDef DMA_InitStructure;
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2,ENABLE);
 	
-	DMA_Cmd(DMA2_Stream6, DISABLE);//2015xxx0819
+	DMA_Cmd(DMA2_Stream3, DISABLE);//2015xxx0819
 	
-	DMA_DeInit(DMA2_Stream6);
-	while (DMA_GetCmdStatus(DMA2_Stream6) != DISABLE){}
+	DMA_DeInit(DMA2_Stream3);
+	while (DMA_GetCmdStatus(DMA2_Stream3) != DISABLE){}
 
-  DMA_ClearFlag(DMA2_Stream6,DMA_FLAG_TCIF6 | DMA_FLAG_HTIF6 | DMA_FLAG_TEIF6 | DMA_FLAG_DMEIF6 | DMA_FLAG_FEIF6);
+  DMA_ClearFlag(DMA2_Stream3,DMA_FLAG_TCIF3 | DMA_FLAG_HTIF3 | DMA_FLAG_TEIF3 | DMA_FLAG_DMEIF3 | DMA_FLAG_FEIF3);
 
   /* DMA2 Channel4 Config */
 	DMA_InitStructure.DMA_Channel=DMA_Channel_4;
@@ -486,15 +529,15 @@ static void DMA_TxConfiguration(u32 *BufferSRC, u32 BufferSize)//DMA2_Stream3???
   DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
   DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;
 	
-	DMA_InitStructure.DMA_FIFOMode=DISABLE;//2015xxx0804
+	DMA_InitStructure.DMA_FIFOMode=DMA_FIFOMode_Enable;//2015xxx0909
 	DMA_InitStructure.DMA_FIFOThreshold=DMA_FIFOThreshold_Full;
 	
-	DMA_InitStructure.DMA_MemoryBurst=DMA_MemoryBurst_Single;
-	DMA_InitStructure.DMA_PeripheralBurst=DMA_PeripheralBurst_Single;
+	DMA_InitStructure.DMA_MemoryBurst=DMA_MemoryBurst_INC4;
+	DMA_InitStructure.DMA_PeripheralBurst=DMA_PeripheralBurst_INC4;
 	
-// 	DMA_FlowControllerConfig(DMA2_Stream6,DMA_FlowCtrl_Peripheral);	
+	DMA_FlowControllerConfig(DMA2_Stream3,DMA_FlowCtrl_Peripheral);	
 
-	DMA_Init(DMA2_Stream6, &DMA_InitStructure);
+	DMA_Init(DMA2_Stream3, &DMA_InitStructure);
 
   
 // 	SDIO_DMACmd(ENABLE);
@@ -505,7 +548,7 @@ static void DMA_TxConfiguration(u32 *BufferSRC, u32 BufferSize)//DMA2_Stream3???
 // 		
 // 	DMA_SetCurrDataCounter(DMA2_Stream6,BufferSize / 4);          //数据传输量  
 
-	DMA_Cmd(DMA2_Stream6, ENABLE);                      //开启DMA传输 
+	DMA_Cmd(DMA2_Stream3, ENABLE);                      //开启DMA传输 
 
 }
 
@@ -604,11 +647,11 @@ static void  stm32_enable_dma(void)
   SDIO_ITConfig(imask, ENABLE);
 	
 	FlagStatus1=DMA_GetFlagStatus(DMA2_Stream3,DMA_FLAG_TCIF3);
-	FlagStatus2=DMA_GetFlagStatus(DMA2_Stream6,DMA_FLAG_TCIF6);
+// 	FlagStatus2=DMA_GetFlagStatus(DMA2_Stream6,DMA_FLAG_TCIF6);
 	FifoStatus=DMA_GetFIFOStatus(DMA2_Stream3);//DMA_FIFOStatus_Less1QuarterFull==0x00000000
-	num=DMA_GetCurrDataCounter(DMA2_Stream6);
+	num=DMA_GetCurrDataCounter(DMA2_Stream3);
 	
-	 while (DMA_GetFlagStatus(DMA2_Stream6,DMA_FLAG_TCIF6) == RESET){}//2015xxx//DMA2_Stream3???
+	 while (DMA_GetFlagStatus(DMA2_Stream3,DMA_FLAG_TCIF3) == RESET){}//2015xxx//DMA2_Stream3???
 	 sdio_deb_leave();
 
 }
