@@ -413,9 +413,13 @@ void DMA2_Stream2_IRQHandler(void)
 {
 	while(1);
 }
-void DMA2_Stream3_IRQHandler(void)
+void DMA2_Stream3_IRQHandler(void)//2015xxx0910
 {
-	while(1);
+	if (DMA2->LISR & DMA_FLAG_TCIF3)
+	{
+		//DMAEndOfTransfer = 0x01;
+		DMA_ClearFlag(DMA2_Stream3, DMA_FLAG_TCIF3 | DMA_FLAG_FEIF3);
+	}
 }
 void DMA2_Stream4_IRQHandler(void)
 {

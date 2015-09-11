@@ -55,6 +55,12 @@ void EnableIrq(u32 irq)
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
+	
+	NVIC_InitStructure.NVIC_IRQChannel = DMA2_Stream3_IRQn;//2015xxx0910
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init (&NVIC_InitStructure);
 }
 void DisableIrq(u32 irq)
 {
@@ -64,6 +70,12 @@ void DisableIrq(u32 irq)
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = DISABLE;
   NVIC_Init(&NVIC_InitStructure);
+	
+	NVIC_InitStructure.NVIC_IRQChannel = DMA2_Stream3_IRQn;//2015xxx0910
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = DISABLE;
+	NVIC_Init (&NVIC_InitStructure);
 }
 
 
@@ -485,7 +497,7 @@ static void DMA_RxConfiguration(u32 *BufferDST, u32 BufferSize)
 	DMA_InitStructure.DMA_MemoryBurst=DMA_MemoryBurst_INC4;
 	DMA_InitStructure.DMA_PeripheralBurst=DMA_PeripheralBurst_INC4;
 	
-	DMA_FlowControllerConfig(DMA2_Stream3,DMA_FlowCtrl_Peripheral);	
+// 	DMA_FlowControllerConfig(DMA2_Stream3,DMA_FlowCtrl_Peripheral);	
 
 	DMA_Init(DMA2_Stream3, &DMA_InitStructure);
 
@@ -532,10 +544,10 @@ static void DMA_TxConfiguration(u32 *BufferSRC, u32 BufferSize)//DMA2_Stream3???
 	DMA_InitStructure.DMA_FIFOMode=DMA_FIFOMode_Enable;//2015xxx0909
 	DMA_InitStructure.DMA_FIFOThreshold=DMA_FIFOThreshold_Full;
 	
-	DMA_InitStructure.DMA_MemoryBurst=DMA_MemoryBurst_INC4;
-	DMA_InitStructure.DMA_PeripheralBurst=DMA_PeripheralBurst_INC4;
+// 	DMA_InitStructure.DMA_MemoryBurst=DMA_MemoryBurst_Single;//2015xxx0910
+	DMA_InitStructure.DMA_PeripheralBurst=DMA_MemoryBurst_Single;
 	
-	DMA_FlowControllerConfig(DMA2_Stream3,DMA_FlowCtrl_Peripheral);	
+// 	DMA_FlowControllerConfig(DMA2_Stream3,DMA_FlowCtrl_Peripheral);	
 
 	DMA_Init(DMA2_Stream3, &DMA_InitStructure);
 
